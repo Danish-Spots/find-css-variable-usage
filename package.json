@@ -1,0 +1,63 @@
+{
+  "name": "findcssvariableusage",
+  "displayName": "FindCssVariableUsage",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.86.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onDidSaveDocument"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "findcssvariableusage.helloWorld",
+        "title": "Hello World"
+      },
+      {
+        "command": "findcssvariableusage.highlightSimilarVariables",
+        "title": "Highlight css variable usage"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Find Css Variable Usage",
+      "properties": {
+        "findcssvariableusage.variableFilePath": {
+          "type": "string",
+          "default": "path/to/default/variable/file.css",
+          "description": "Path to the CSS variable file, must be absolute path"
+        },
+        "findcssvariableusage.textColor": {
+          "type": "string",
+          "default": "rgba(255, 255, 255, 1)",
+          "description": "Color for the text in rgba format (e.g., rgba(255, 255, 255, 1))"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "yarn run compile && yarn run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.86.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.9"
+  }
+}
