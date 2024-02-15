@@ -4,31 +4,40 @@
 /**
  * This extension was made using alot of chatGpt 3.5 prompts
  */
-import * as vscode from "vscode";
-import fs from "fs";
+import fs from 'fs';
+import * as vscode from 'vscode';
 
+interface CssVariable {
+  name: string;
+  value: string;
+}
 const variableDecorationType = vscode.window.createTextEditorDecorationType({
   overviewRulerLane: vscode.OverviewRulerLane.Right, // Set the overview ruler lane
 });
+const absolutePath =
+  vscode.workspace
+    .getConfiguration()
+    .get<string>('findcssvariableusage.variableFilePath') ||
+  'path/to/default/variable/file.css';
+let cssVariables: CssVariable[];
+const cssVarTokenRegex = /(--[\w-]+):([^;]+);/;
+const cssVarTokenRegexGlobal = /(--[\w-]+):([^;]+);/g;
 
 const textColor =
   vscode.workspace
     .getConfiguration()
-    .get<string>("findcssvariableusage.textColor") || "rgba(255, 255, 255, 1)";
+    .get<string>('findcssvariableusage.textColor') || 'rgba(255, 255, 255, 1)';
+
 let activeEditor = vscode.window.activeTextEditor;
-const variableFilePath =
-  vscode.workspace
-    .getConfiguration()
-    .get<string>("findcssvariableusage.variableFilePath") ||
-  "path/to/default/variable/file.css";
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  // Register a listener for text editor changes
+  // Read source files initially
+  readSourceFiles();
 
   // Register your command (optional)
   vscode.commands.registerCommand(
-    "findcssvariableusage.highlightSimilarVariables",
+    'findcssvariableusage.highlightSimilarVariables',
     () => {
       if (activeEditor) {
         highlightSimilarVariables(activeEditor);
@@ -45,12 +54,12 @@ export function activate(context: vscode.ExtensionContext) {
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
   let disposable = vscode.commands.registerCommand(
-    "findcssvariableusage.helloWorld",
+    'findcssvariableusage.helloWorld',
     () => {
       // The code you place here will be executed every time your command is executed
       // Display a message box to the user
       vscode.window.showInformationMessage(
-        "Hello World from FindCssVariableUsage!"
+        'Hello World from FindCssVariableUsage!'
       );
     }
   );
@@ -63,82 +72,89 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
       if (
-        (document.languageId === "css" || document.languageId === "scss") &&
+        (document.languageId === 'css' || document.languageId === 'scss') &&
         activeEditor
       ) {
         highlightSimilarVariables(activeEditor);
       }
     })
   );
+
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration(() => {
+      readSourceFiles();
+    })
+  );
 }
 
 function highlightSimilarVariables(editor: vscode.TextEditor): void {
-  const absolutePath =
+  if (cssVariables.length === 0) return;
+
+  const decorations: vscode.DecorationOptions[] = [];
+
+  cssVariables.forEach(({ name, value }) => {
+    const valueRegex = new RegExp(`${value}`, 'g');
+
+    let match;
+    while ((match = valueRegex.exec(editor.document.getText()))) {
+      const matchStart = editor.document.offsetAt(
+        editor.document.getWordRangeAtPosition(
+          editor.document.positionAt(match.index).translate(0, 1)
+        )?.start || editor.document.positionAt(match.index).translate(0, 1)
+      );
+      const matchEnd = matchStart + match[0].length;
+
+      const range = new vscode.Range(
+        editor.document.positionAt(matchStart),
+        editor.document.positionAt(matchEnd)
+      );
+
+      decorations.push({
+        range,
+        renderOptions: {
+          after: {
+            contentText: `    Replace with: ${name}`,
+            color: textColor,
+          },
+        },
+      });
+
+      valueRegex.lastIndex = match.index + 1;
+      console.log(decorations);
+    }
+  });
+
+  editor.setDecorations(variableDecorationType, decorations);
+}
+
+function readSourceFiles(): void {
+  const sourceFileProperties =
     vscode.workspace
       .getConfiguration()
-      .get<string>("findcssvariableusage.variableFilePath") ||
-    "path/to/default/variable/file.css";
+      .get<{ [filePath: string]: string[] }>(
+        'findcssvariableusage.sourceFileProperties'
+      ) || {};
 
-  try {
-    const sourceFileContent = fs.readFileSync(absolutePath, "utf-8");
+  cssVariables = [];
 
-    // Extract CSS variables within :root selector
-    const rootSelectorMatch = sourceFileContent.match(/:root\s*\{([\s\S]*?)\}/);
-    const cssVariables = rootSelectorMatch
-      ? rootSelectorMatch[1].match(/(--[\w-]+:[^;]+;)/g)
-      : null;
-
-    if (cssVariables) {
-      const decorations = cssVariables.flatMap((variableDeclaration) => {
-        const valueMatch = variableDeclaration.match(/(--[\w-]+):([^;]+);/);
-        if (valueMatch) {
-          const variableName = valueMatch[1];
-          const variableValue = valueMatch[2];
-
-          const escapedValue = variableValue.replace(
-            /[.*+?^${}()|[\]\\]/g,
-            "\\$&"
-          );
-          const valueRegex = new RegExp(`${escapedValue}`, "g");
-
-          let match;
-          const matches = [];
-
-          // Iterate over all matches in the document
-          while ((match = valueRegex.exec(editor.document.getText()))) {
-            const matchStart = editor.document.offsetAt(
-              editor.document.getWordRangeAtPosition(
-                editor.document.positionAt(match.index).translate(0, 1)
-              )?.start ||
-                editor.document.positionAt(match.index).translate(0, 1)
-            );
-            const matchEnd = matchStart + match[0].length;
-
-            const range = new vscode.Range(
-              editor.document.positionAt(matchStart),
-              editor.document.positionAt(matchEnd)
-            );
-            matches.push({
-              range,
-              renderOptions: {
-                after: {
-                  contentText: `	Replace with: ${variableName.trim()}`,
-                  color: textColor,
-                },
-              },
-            });
-
-            // Update lastIndex for the next search
-            valueRegex.lastIndex = matchEnd;
-          }
-
-          return matches;
+  Object.entries(sourceFileProperties).forEach(([filePath, properties]) => {
+    try {
+      const sourceFileContent = fs.readFileSync(filePath, 'utf-8');
+      const matches = sourceFileContent.matchAll(cssVarTokenRegexGlobal);
+      for (const match of matches) {
+        const [, name, value] = match;
+        // Check if the variable is associated with any checked property for this file
+        if (
+          properties.some((prop) =>
+            sourceFileContent.includes(`${prop}: var(${name})`)
+          )
+        ) {
+          cssVariables.push({ name: name.trim(), value: value.trim() });
         }
-        return [];
-      });
-      editor.setDecorations(variableDecorationType, decorations);
+      }
+    } catch (error) {
+      console.error('Error reading source file:', error);
     }
-  } catch (error) {
-    console.error("Error reading source file:", error);
-  }
+  });
 }
+
