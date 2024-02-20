@@ -25,73 +25,65 @@
         "title": "Highlight css variable usage"
       }
     ],
-    "configuration": {
-      "type": "object",
-      "title": "Find Css Variable Usage",
-      "properties": {
-        "findcssvariableusage.variableFilePaths": {
-          "type": "array",
-          "default": "[]",
-          "description": "Path to the CSS variable files, must be absolute path"
-        },
-        "findcssvariableusage.textColor": {
-          "type": "string",
-          "default": "rgba(255, 255, 255, 1)",
-          "description": "Color for the text in rgba format (e.g., rgba(255, 255, 255, 1))"
-        },
-        "findcssvariableusage.colorVariablesFile": {
-          "type": "string",
-          "default": "<absolute path here>",
-          "description": "Absolute path to the css file containing the variables for colors"
-        },
-        "findcssvariableusage.typographyVariablesFile": {
-          "type": "string",
-          "default": "<absolute path here>",
-          "description": "Absolute path to the css file containing the variables for typography"
-        },
-        "findcssvariableusage.spacingVariablesFile": {
-          "type": "string",
-          "default": "<absolute path here>",
-          "description": "Absolute path to the css file containing the variables for spacing"
-        },
-        "findcssvariableusage.radiiVariablesFile": {
-          "type": "string",
-          "default": "<absolute path here>",
-          "description": "Absolute path to the css file containing the variables for border radii"
-        },
-        "findcssvariableusage.sourceFileProperties": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "filePath": {
-                "type": "string",
-                "description": "Path to the source file"
-              },
-              "checkedProperties": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "CSS properties to check"
-              }
-            }
+    "configuration": [
+      {
+        "title": "Color variable settings",
+        "properties": {
+          "findcssvariableusage.colorSettings.filePath": {
+            "type": "string",
+            "default": "absolute-path/to/src/file",
+            "description": "Absolute path to source file that contains color variables"
+          }
+        }
+      },
+      {
+        "title": "Font variable settings",
+        "properties": {
+          "findcssvariableusage.fontSettings.filePath": {
+            "type": "string",
+            "default": "absolute-path/to/src/file",
+            "description": "Absolute path to source file that contains font variables"
           },
-          "default": [],
-          "description": "List of source files and their associated CSS properties to check"
-        },
-        "findcssvariableusage.sourceFilePropertiesTwo": {
-          "type": "array",
-          "items": {
-            "type": "string"
+          "findcssvariableusage.fontSettings.fontSizeIdentifier": {
+            "type": "string",
+            "default": "",
+            "description": "Set this to a partial of the name of a font size css variable to have font sizes only use similar variables."
           },
-          "default": [
-            "<absolute path>||<css-key>"
-          ],
-          "description": "List of source files and their associated CSS properties to check"
+          "findcssvariableusage.fontSettings.fontWeightIdentifier": {
+            "type": "string",
+            "default": "",
+            "description": "Set this to a partial of the name of a font weight css variable to have font weights only use similar variables."
+          },
+          "findcssvariableusage.fontSettings.lineHeightIdentifier": {
+            "type": "string",
+            "default": "",
+            "description": "Set this to a partial of the name of a line height css variable to have line heights only use similar variables."
+          }
+        }
+      },
+      {
+        "title": "Spacing variable settings",
+        "properties": {
+          "findcssvariableusage.spacingSettings.FilePath": {
+            "type": "string",
+            "default": "absolute-path/to/src/file",
+            "description": "Absolute path to source file that contains spacing variables"
+          },
+          "findcssvariableusage.spacingSettings.applyToProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [
+              "margin",
+              "padding",
+              "gap"
+            ],
+            "description": "Set what css properties are looked at for css variables. By default, margin, padding and gap are selected. You do not need to list all variations of margin or padding, just 'padding' will be enough."
+          }
         }
       }
-    }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",
@@ -113,4 +105,3 @@
     "@vscode/test-electron": "^2.3.9"
   }
 }
-
