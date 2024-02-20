@@ -2,27 +2,37 @@ import * as vscode from "vscode";
 
 export function loadAllSettings() {
   return {
-    colorFilePath: getSettingsValue(
-      "findcssvariableusage.colorSettings.filePath"
-    ),
-    fontFilePath: getSettingsValue(
-      "findcssvariableusage.fontSettings.filePath"
-    ),
-    fontSizeIdentifer: getSettingsValue(
-      "findcssvariableusage.fontSettings.fontSizeIdentifier"
-    ),
-    fontWeightIdentifier: getSettingsValue(
-      "findcssvariableusage.fontSettings.fontWeightIdentifier"
-    ),
-    lineHeightIdentifer: getSettingsValue(
-      "findcssvariableusage.fontSettings.lineHeightIdentifier"
-    ),
-    spacingFilePath: getSettingsValue(
-      "findcssvariableusage.spacingSettings.FilePath"
-    ),
-    spacingApplyTo: getSettingsValue<string[]>(
-      "findcssvariableusage.spacingSettings.applyToProperties"
-    ),
+    colorSettings: {
+      filePath: getSettingsValue("findcssvariableusage.colorSettings.filePath"),
+    },
+    fontSettings: {
+      filePath: getSettingsValue("findcssvariableusage.fontSettings.filePath"),
+      fontSize: getSettingsValue(
+        "findcssvariableusage.fontSettings.fontSizeIdentifier"
+      ),
+      fontWeight: getSettingsValue(
+        "findcssvariableusage.fontSettings.fontWeightIdentifier"
+      ),
+      lineHeight: getSettingsValue(
+        "findcssvariableusage.fontSettings.lineHeightIdentifier"
+      ),
+      fontFamily: getSettingsValue(
+        "findcssvariableusage.fontSettings.fontFamilyIdentifier"
+      ),
+    },
+    spacingSettings: {
+      filePath: getSettingsValue(
+        "findcssvariableusage.spacingSettings.FilePath"
+      ),
+      spacingApplyTo: getSettingsValue<string[]>(
+        "findcssvariableusage.spacingSettings.applyToProperties"
+      ),
+    },
+    otherSettings: {
+      cssPropertiesToLookAt: getSettingsValue<string[]>(
+        "findcssvariableusage.otherSettings.cssProperties"
+      ),
+    },
   };
 }
 

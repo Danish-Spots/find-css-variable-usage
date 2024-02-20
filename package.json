@@ -58,6 +58,11 @@
             "type": "string",
             "default": "",
             "description": "Set this to a partial of the name of a line height css variable to have line heights only use similar variables."
+          },
+          "findcssvariableusage.fontSettings.fontFamilyIdentifier": {
+            "type": "string",
+            "default": "",
+            "description": "Set this to the name of the font family css variable to be able to use it"
           }
         }
       },
@@ -80,6 +85,28 @@
               "gap"
             ],
             "description": "Set what css properties are looked at for css variables. By default, margin, padding and gap are selected. You do not need to list all variations of margin or padding, just 'padding' will be enough."
+          }
+        }
+      },
+      {
+        "title": "Other settings",
+        "properties": {
+          "findcssvariableusage.otherSettings.cssProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [
+              "padding",
+              "margin",
+              "font-size",
+              "font-weight",
+              "font-family",
+              "line-height",
+              "color",
+              "background"
+            ],
+            "description": "List all css properties this extension will look at across all files. \nThis allows for you to remove properties you dont want to look at. \nSimilar to spacing, padding and margin look at all variants. \n\nBecause of how this extension is built, you can only remove properties from this array, adding will break it."
           }
         }
       }

@@ -6,8 +6,9 @@
  */
 import fs from "fs";
 import * as vscode from "vscode";
-import { readSourceFiles } from "./read-files";
+import { readSourceFile, readSourceFiles } from "./read-files";
 import { loadAllSettings } from "./load-all-settings";
+import { highlightSimilarVariablesV2 } from "./highlight";
 
 interface CssVariable {
   name: string;
@@ -32,6 +33,8 @@ const textColor =
 let activeEditor = vscode.window.activeTextEditor;
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
+const settingsValues = loadAllSettings();
+
 export function activate(context: vscode.ExtensionContext) {
   // Read source files initially
   // readSourceFiles(
@@ -43,7 +46,8 @@ export function activate(context: vscode.ExtensionContext) {
   //   ]
   // );¨
 
-  console.table(loadAllSettings());
+  // console.table(settingsValues);
+  const colorVars = readSourceFile(settingsValues.colorSettings.filePath);
 
   // Register your command (optional)
   vscode.commands.registerCommand(
@@ -51,6 +55,11 @@ export function activate(context: vscode.ExtensionContext) {
     () => {
       if (activeEditor) {
         // highlightSimilarVariables(activeEditor);
+        highlightSimilarVariablesV2(
+          activeEditor,
+          { color: colorVars, "background-color": colorVars },
+          ["color", "background-color"]
+        );
       }
     }
   );

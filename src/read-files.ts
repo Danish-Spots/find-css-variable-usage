@@ -1,5 +1,59 @@
+/* eslint-disable curly */
 import * as vscode from "vscode";
 import fs from "fs";
+
+export interface CssVariable {
+  /**
+   * Value of css variable, eg #fff
+   */
+  value: string;
+  /**
+   * Name of css variable, eg --name-of-var
+   */
+  name: string;
+  /**
+   * Replacement suggestion, eg var(--name-of-var)
+   */
+  replacement: string;
+}
+export type CssVariableMapping = Record<string, CssVariable>;
+/**
+ * Interface representing all css variables mapped out of all files
+ * To avoid conflicts between spacing and font sizes, they are mapped by keys
+ * @interface
+ */
+export interface AllCssVariableMappings {
+  /**
+   * record of css properties with record of mappings
+   * @type
+   */
+  [key: string]: CssVariableMapping | undefined;
+}
+export function readSourceFile(
+  pathToFile: string | undefined
+): CssVariableMapping | undefined {
+  const cssVariables: Record<string, CssVariable> = {};
+
+  try {
+    if (!pathToFile || pathToFile === "absolute-path/to/src/file")
+      return cssVariables;
+
+    const fileContent = fs.readFileSync(pathToFile, "utf-8");
+    const matches = fileContent.matchAll(/(--[\w-]+):([^;]+);/g);
+    if (matches)
+      for (let [_match, name, value] of matches) {
+        name = name.trim();
+        value = value.trim();
+        cssVariables[value] = { value, name, replacement: `var(${name})` };
+      }
+    return cssVariables;
+  } catch (error) {
+    vscode.window.showErrorMessage(
+      `Error reading source file (path: ${pathToFile}): ${error}`
+    );
+    return undefined;
+  }
+}
 
 export function readSourceFiles(
   settingsName: string,
