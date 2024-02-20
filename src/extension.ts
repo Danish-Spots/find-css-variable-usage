@@ -4,8 +4,9 @@
 /**
  * This extension was made using alot of chatGpt 3.5 prompts
  */
-import fs from 'fs';
-import * as vscode from 'vscode';
+import fs from "fs";
+import * as vscode from "vscode";
+import { readSourceFiles } from "./read-files";
 
 interface CssVariable {
   name: string;
@@ -17,8 +18,8 @@ const variableDecorationType = vscode.window.createTextEditorDecorationType({
 const absolutePath =
   vscode.workspace
     .getConfiguration()
-    .get<string>('findcssvariableusage.variableFilePath') ||
-  'path/to/default/variable/file.css';
+    .get<string>("findcssvariableusage.variableFilePath") ||
+  "path/to/default/variable/file.css";
 let cssVariables: CssVariable[];
 const cssVarTokenRegex = /(--[\w-]+):([^;]+);/;
 const cssVarTokenRegexGlobal = /(--[\w-]+):([^;]+);/g;
@@ -26,21 +27,28 @@ const cssVarTokenRegexGlobal = /(--[\w-]+):([^;]+);/g;
 const textColor =
   vscode.workspace
     .getConfiguration()
-    .get<string>('findcssvariableusage.textColor') || 'rgba(255, 255, 255, 1)';
+    .get<string>("findcssvariableusage.textColor") || "rgba(255, 255, 255, 1)";
 
 let activeEditor = vscode.window.activeTextEditor;
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
   // Read source files initially
-  readSourceFiles();
+  readSourceFiles(
+    "findcssvariableusage.colorVariablesFile",
+    cssVarTokenRegexGlobal,
+    [
+      { name: "color", conditionFn: undefined },
+      { name: "background-color", conditionFn: undefined },
+    ]
+  );
 
   // Register your command (optional)
   vscode.commands.registerCommand(
-    'findcssvariableusage.highlightSimilarVariables',
+    "findcssvariableusage.highlightSimilarVariables",
     () => {
       if (activeEditor) {
-        highlightSimilarVariables(activeEditor);
+        // highlightSimilarVariables(activeEditor);
       }
     }
   );
@@ -54,12 +62,12 @@ export function activate(context: vscode.ExtensionContext) {
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
   let disposable = vscode.commands.registerCommand(
-    'findcssvariableusage.helloWorld',
+    "findcssvariableusage.helloWorld",
     () => {
       // The code you place here will be executed every time your command is executed
       // Display a message box to the user
       vscode.window.showInformationMessage(
-        'Hello World from FindCssVariableUsage!'
+        "Hello World from FindCssVariableUsage!"
       );
     }
   );
@@ -72,17 +80,20 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
       if (
-        (document.languageId === 'css' || document.languageId === 'scss') &&
+        (document.languageId === "css" || document.languageId === "scss") &&
         activeEditor
       ) {
-        highlightSimilarVariables(activeEditor);
+        // highlightSimilarVariables(activeEditor);
       }
     })
   );
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration(() => {
-      readSourceFiles();
+      readSourceFiles(
+        "findcssvariableusage.colorVariablesFile",
+        cssVarTokenRegexGlobal
+      );
     })
   );
 }
@@ -93,7 +104,7 @@ function highlightSimilarVariables(editor: vscode.TextEditor): void {
   const decorations: vscode.DecorationOptions[] = [];
 
   cssVariables.forEach(({ name, value }) => {
-    const valueRegex = new RegExp(`${value}`, 'g');
+    const valueRegex = new RegExp(`${value}`, "g");
 
     let match;
     while ((match = valueRegex.exec(editor.document.getText()))) {
@@ -126,35 +137,3 @@ function highlightSimilarVariables(editor: vscode.TextEditor): void {
 
   editor.setDecorations(variableDecorationType, decorations);
 }
-
-function readSourceFiles(): void {
-  const sourceFileProperties =
-    vscode.workspace
-      .getConfiguration()
-      .get<{ [filePath: string]: string[] }>(
-        'findcssvariableusage.sourceFileProperties'
-      ) || {};
-
-  cssVariables = [];
-
-  Object.entries(sourceFileProperties).forEach(([filePath, properties]) => {
-    try {
-      const sourceFileContent = fs.readFileSync(filePath, 'utf-8');
-      const matches = sourceFileContent.matchAll(cssVarTokenRegexGlobal);
-      for (const match of matches) {
-        const [, name, value] = match;
-        // Check if the variable is associated with any checked property for this file
-        if (
-          properties.some((prop) =>
-            sourceFileContent.includes(`${prop}: var(${name})`)
-          )
-        ) {
-          cssVariables.push({ name: name.trim(), value: value.trim() });
-        }
-      }
-    } catch (error) {
-      console.error('Error reading source file:', error);
-    }
-  });
-}
-
