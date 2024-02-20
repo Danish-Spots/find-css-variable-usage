@@ -7,6 +7,7 @@
 import fs from "fs";
 import * as vscode from "vscode";
 import { readSourceFiles } from "./read-files";
+import { loadAllSettings } from "./load-all-settings";
 
 interface CssVariable {
   name: string;
@@ -28,20 +29,21 @@ const textColor =
   vscode.workspace
     .getConfiguration()
     .get<string>("findcssvariableusage.textColor") || "rgba(255, 255, 255, 1)";
-
 let activeEditor = vscode.window.activeTextEditor;
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
   // Read source files initially
-  readSourceFiles(
-    "findcssvariableusage.colorVariablesFile",
-    cssVarTokenRegexGlobal,
-    [
-      { name: "color", conditionFn: undefined },
-      { name: "background-color", conditionFn: undefined },
-    ]
-  );
+  // readSourceFiles(
+  //   "findcssvariableusage.colorVariablesFile",
+  //   cssVarTokenRegexGlobal,
+  //   [
+  //     { name: "color", conditionFn: undefined },
+  //     { name: "background-color", conditionFn: undefined },
+  //   ]
+  // );¨
+
+  console.table(loadAllSettings());
 
   // Register your command (optional)
   vscode.commands.registerCommand(
@@ -90,10 +92,10 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration(() => {
-      readSourceFiles(
-        "findcssvariableusage.colorVariablesFile",
-        cssVarTokenRegexGlobal
-      );
+      // readSourceFiles(
+      //   "findcssvariableusage.colorVariablesFile",
+      //   cssVarTokenRegexGlobal
+      // );
     })
   );
 }
