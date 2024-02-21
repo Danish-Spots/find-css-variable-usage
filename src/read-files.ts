@@ -30,7 +30,8 @@ export interface AllCssVariableMappings {
   [key: string]: CssVariableMapping | undefined;
 }
 export function readSourceFile(
-  pathToFile: string | undefined
+  pathToFile: string | undefined,
+  identifiers: string[] | undefined
 ): CssVariableMapping | undefined {
   const cssVariables: Record<string, CssVariable> = {};
 
@@ -42,9 +43,15 @@ export function readSourceFile(
     const matches = fileContent.matchAll(/(--[\w-]+):([^;]+);/g);
     if (matches)
       for (let [_match, name, value] of matches) {
-        name = name.trim();
-        value = value.trim();
-        cssVariables[value] = { value, name, replacement: `var(${name})` };
+        value = value.replace("#", "").trim();
+        cssVariables[value] = createValue(name.trim(), value);
+        if (identifiers) {
+          if (identifiers.some((identifier) => name.includes(identifier))) {
+            cssVariables[value] = createValue(name.trim(), value);
+          }
+        } else {
+          cssVariables[value] = createValue(name.trim(), value);
+        }
       }
     return cssVariables;
   } catch (error) {
@@ -53,6 +60,11 @@ export function readSourceFile(
     );
     return undefined;
   }
+}
+
+function createValue(name: string, value: string) {
+  return { value, name, replacement: `var(${name})` };
+  // cssVariables[value] = { value, name, replacement: `var(${name})` };
 }
 
 export function readSourceFiles(

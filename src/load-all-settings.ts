@@ -4,6 +4,12 @@ export function loadAllSettings() {
   return {
     colorSettings: {
       filePath: getSettingsValue("findcssvariableusage.colorSettings.filePath"),
+      cssProperties: getSettingsValue<string[]>(
+        "findcssvariableusage.colorSettings.cssProperties"
+      ),
+      identifiers: getSettingsValue<string[]>(
+        "findcssvariableusage.colorSettings.identifiers"
+      ),
     },
     fontSettings: {
       filePath: getSettingsValue("findcssvariableusage.fontSettings.filePath"),

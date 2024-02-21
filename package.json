@@ -11,7 +11,9 @@
   ],
   "activationEvents": [
     "onDidSaveDocument",
-    "onDidChangeConfiguration"
+    "onDidChangeConfiguration",
+    "onLanguage:css",
+    "onLanguage:scss"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -23,6 +25,10 @@
       {
         "command": "findcssvariableusage.highlightSimilarVariables",
         "title": "Highlight css variable usage"
+      },
+      {
+        "command": "findcssvariableusage.replaceValue",
+        "title": "Replace value in document, runs through code lens"
       }
     ],
     "configuration": [
@@ -33,36 +39,146 @@
             "type": "string",
             "default": "absolute-path/to/src/file",
             "description": "Absolute path to source file that contains color variables"
+          },
+          "findcssvariableusage.colorSettings.identifiers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "If you keep all variables in one file, you will need to set items here so that only color variables are assigned for color matching. You only need to put in partials, an example has been provided",
+            "default": [
+              "ramp"
+            ]
+          },
+          "findcssvariableusage.colorSettings.cssProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Set the css properties to analyse for color values here",
+            "default": [
+              "background",
+              "background-color",
+              "color",
+              "border",
+              "border-color",
+              "border-bottom-color",
+              "border-left-color",
+              "border-right-color",
+              "border-top-color"
+            ]
           }
         }
       },
       {
-        "title": "Font variable settings",
+        "title": "Font size variable settings",
         "properties": {
-          "findcssvariableusage.fontSettings.filePath": {
+          "findcssvariableusage.fontSizeSettings.filePath": {
             "type": "string",
             "default": "absolute-path/to/src/file",
             "description": "Absolute path to source file that contains font variables"
           },
-          "findcssvariableusage.fontSettings.fontSizeIdentifier": {
-            "type": "string",
-            "default": "",
+          "findcssvariableusage.fontSizeSettings.identifiers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
             "description": "Set this to a partial of the name of a font size css variable to have font sizes only use similar variables."
           },
-          "findcssvariableusage.fontSettings.fontWeightIdentifier": {
+          "findcssvariableusage.fontSizeSettings.cssProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of css properties that will be looked at for matching font size",
+            "default": [
+              "font-size"
+            ]
+          }
+        }
+      },
+      {
+        "title": "Font weight variable settings",
+        "properties": {
+          "findcssvariableusage.fontWeightSettings.filePath": {
             "type": "string",
-            "default": "",
+            "default": "absolute-path/to/src/file",
+            "description": "Absolute path to source file that contains font weight variables"
+          },
+          "findcssvariableusage.fontWeightSettings.identifiers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [],
             "description": "Set this to a partial of the name of a font weight css variable to have font weights only use similar variables."
           },
-          "findcssvariableusage.fontSettings.lineHeightIdentifier": {
+          "findcssvariableusage.fontWeightSettings.cssProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of css properties that will be looked at for matching font weight",
+            "default": [
+              "font-weight"
+            ]
+          }
+        }
+      },
+      {
+        "title": "Font family variable settings",
+        "properties": {
+          "findcssvariableusage.fontFamilySettings.filePath": {
             "type": "string",
+            "default": "absolute-path/to/src/file",
+            "description": "Absolute path to source file that contains font family variables"
+          },
+          "findcssvariableusage.fontFamilySettings.identifiers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": "",
+            "description": "Set this to the name of the font family css variable to be able to use it"
+          },
+          "findcssvariableusage.fontFamilySettings.cssProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of css properties that will be looked at for matching font weight",
+            "default": [
+              "font-weight"
+            ]
+          }
+        }
+      },
+      {
+        "title": "Line height variable settings",
+        "properties": {
+          "findcssvariableusage.lineHeightSettings.filePath": {
+            "type": "string",
+            "default": "absolute-path/to/src/file",
+            "description": "Absolute path to source file that contains line height variables"
+          },
+          "findcssvariableusage.lineHeightSettings.identifiers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
             "default": "",
             "description": "Set this to a partial of the name of a line height css variable to have line heights only use similar variables."
           },
-          "findcssvariableusage.fontSettings.fontFamilyIdentifier": {
-            "type": "string",
-            "default": "",
-            "description": "Set this to the name of the font family css variable to be able to use it"
+          "findcssvariableusage.lineHeightSettings.cssProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of css properties that will be looked at for matching line height",
+            "default": [
+              "line-height"
+            ]
           }
         }
       },
