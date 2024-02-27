@@ -17,20 +17,7 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "findcssvariableusage.helloWorld",
-        "title": "Hello World"
-      },
-      {
-        "command": "findcssvariableusage.highlightSimilarVariables",
-        "title": "Highlight css variable usage"
-      },
-      {
-        "command": "findcssvariableusage.replaceValue",
-        "title": "Replace value in document, runs through code lens"
-      }
-    ],
+    "commands": [],
     "configuration": [
       {
         "title": "Color variable settings",
@@ -228,22 +215,14 @@
       {
         "title": "Other settings",
         "properties": {
-          "findcssvariableusage.otherSettings.cssProperties": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "default": [
-              "padding",
-              "margin",
-              "font-size",
-              "font-weight",
-              "font-family",
-              "line-height",
-              "color",
-              "background"
+          "findcssvariableusage.otherSettings.watchTrigger": {
+            "type": "string",
+            "enum": [
+              "On save",
+              "On text change"
             ],
-            "description": "List all css properties this extension will look at across all files. \nThis allows for you to remove properties you dont want to look at. \nSimilar to spacing, padding and margin look at all variants. \n\nBecause of how this extension is built, you can only remove properties from this array, adding will break it."
+            "default": "On save",
+            "description": "Change how a file is analyzed, by default it is on save. However you can change it to analyze on every text change"
           }
         }
       }

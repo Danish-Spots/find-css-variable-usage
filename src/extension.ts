@@ -7,7 +7,11 @@
 import fs from "fs";
 import * as vscode from "vscode";
 import { AllCssVariableMappings, readSourceFile } from "./read-files";
-import { loadAllSettings } from "./load-all-settings";
+import {
+  ConfigSettings,
+  getSettingsValue,
+  loadAllSettings,
+} from "./load-all-settings";
 import { CssVariableSuggestionCodeLensProvider } from "./code-lens.provider";
 
 interface CssVariable {
@@ -22,8 +26,7 @@ export var allVariables: AllCssVariableMappings = {};
 
 export function activate(context: vscode.ExtensionContext) {
   createVariables();
-  console.log(allVariables);
-
+  setupAnalyzer();
   let codeLensProviderDisposableCss = vscode.languages.registerCodeLensProvider(
     {
       language: "css",
@@ -42,7 +45,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(codeLensProviderDisposableCss);
   context.subscriptions.push(codeLensProviderDisposableScss);
 
-  vscode.commands.registerCommand(
+  const replaceValueDisposable = vscode.commands.registerCommand(
     "findcssvariableusage.replaceValue",
     (args: RepalceArgs) => {
       const replacementLine = args.fullMatch.replace(
@@ -56,6 +59,25 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.workspace.applyEdit(editBuilder);
     }
   );
+  context.subscriptions.push(replaceValueDisposable);
+
+  const configChangeDisposable = vscode.workspace.onDidChangeConfiguration(
+    (event: vscode.ConfigurationChangeEvent) => {
+      if (event.affectsConfiguration("findcssvariableusage")) {
+        // Read files when the relevant configuration is changed
+        reloadSettings();
+      }
+      if (
+        event.affectsConfiguration(
+          "findcssvariableusage.otherSettings.watchTrigger"
+        )
+      ) {
+        setupAnalyzer();
+      }
+    }
+  );
+
+  context.subscriptions.push(configChangeDisposable);
 }
 
 interface RepalceArgs {
@@ -64,6 +86,33 @@ interface RepalceArgs {
   value: string;
   replacement: string;
   document: vscode.TextDocument;
+}
+
+function reloadSettings() {
+  console.log("test");
+  loadAllSettings();
+  createVariables();
+}
+
+let onSaveDisposable: vscode.Disposable | undefined;
+let onChangeDisposable: vscode.Disposable | undefined;
+function setupAnalyzer() {
+  const analyzeCondition = getSettingsValue(
+    "findcssvariableusage.otherSettings.watchTrigger"
+  );
+  if (analyzeCondition === "On save") {
+    onChangeDisposable?.dispose();
+    onChangeDisposable = undefined;
+    onSaveDisposable = vscode.workspace.onDidSaveTextDocument((event) => {
+      console.log(event, "save");
+    });
+  } else {
+    onSaveDisposable?.dispose();
+    onSaveDisposable = undefined;
+    onChangeDisposable = vscode.workspace.onDidChangeTextDocument((event) => {
+      console.log(event, "change");
+    });
+  }
 }
 
 function createVariables() {

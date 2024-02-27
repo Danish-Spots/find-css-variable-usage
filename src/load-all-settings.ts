@@ -12,11 +12,11 @@ export function loadAllSettings() {
   };
 }
 
-function getSettingsValue<T = string>(settingName: string) {
+export function getSettingsValue<T = string>(settingName: string) {
   return vscode.workspace.getConfiguration().get<T>(settingName);
 }
 
-type ConfigSettings =
+export type ConfigSettings =
   | "colorSettings"
   | "fontSizeSettings"
   | "fontWeightSettings"
