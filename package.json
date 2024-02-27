@@ -38,24 +38,21 @@
           "findcssvariableusage.colorSettings.filePath": {
             "type": "string",
             "default": "absolute-path/to/src/file",
-            "description": "Absolute path to source file that contains color variables"
+            "description": "Absolute path to source file that contains color variables. \nYou can also specify a relative path to the open workspace folder by starting the path with ./"
           },
           "findcssvariableusage.colorSettings.identifiers": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "If you keep all variables in one file, you will need to set items here so that only color variables are assigned for color matching. You only need to put in partials, an example has been provided",
-            "default": [
-              "ramp"
-            ]
+            "description": "If you keep all of your css variables in one file, you will need to set a partial of the string name here so that only correct variables are assigned to colors.\nFor example, if you have variables --color-blue-100, you can add color as an item here and it will add all variables with color in for color matching"
           },
           "findcssvariableusage.colorSettings.cssProperties": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Set the css properties to analyse for color values here",
+            "description": "Set the css properties to analyse for color values here. You only need to set 1 form of it, for example, if you set background, you dont need to also set background-color",
             "default": [
               "background",
               "color",
@@ -70,22 +67,21 @@
           "findcssvariableusage.fontSizeSettings.filePath": {
             "type": "string",
             "default": "absolute-path/to/src/file",
-            "description": "Absolute path to source file that contains font variables"
+            "description": "Absolute path to source file that contains font size variables. \nYou can also specify a relative path to the open workspace folder by starting the path with ./"
           },
           "findcssvariableusage.fontSizeSettings.identifiers": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "default": [],
-            "description": "Set this to a partial of the name of a font size css variable to have font sizes only use similar variables."
+            "description": "If you keep all of your css variables in one file, you will need to set a partial of the string name here so that only correct variables are assigned to font sizes.\nFor example, if you have variables --font-size-1, you can add font-size as an item here and it will add all variables with font-size in for font size matching"
           },
           "findcssvariableusage.fontSizeSettings.cssProperties": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Array of css properties that will be looked at for matching font size",
+            "description": "Set the css properties to analyse for font-size values here. You only need to set 1 form of it, for example, if you set font, you dont need to also set font-size",
             "default": [
               "font-size"
             ]
@@ -98,22 +94,21 @@
           "findcssvariableusage.fontWeightSettings.filePath": {
             "type": "string",
             "default": "absolute-path/to/src/file",
-            "description": "Absolute path to source file that contains font weight variables"
+            "description": "Absolute path to source file that contains font weight variables. \nYou can also specify a relative path to the open workspace folder by starting the path with ./"
           },
           "findcssvariableusage.fontWeightSettings.identifiers": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "default": [],
-            "description": "Set this to a partial of the name of a font weight css variable to have font weights only use similar variables."
+            "description": "If you keep all of your css variables in one file, you will need to set a partial of the string name here so that only correct variables are assigned to font weights.\nFor example, if you have variables --font-weight-1, you can add font-weight as an item here and it will add all variables with font-weight in for font weight matching"
           },
           "findcssvariableusage.fontWeightSettings.cssProperties": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Array of css properties that will be looked at for matching font weight",
+            "description": "Set the css properties to analyse for font-weight values here. You only need to set 1 form of it, for example, if you set font, you dont need to also set font-weight",
             "default": [
               "font-weight"
             ]
@@ -126,24 +121,23 @@
           "findcssvariableusage.fontFamilySettings.filePath": {
             "type": "string",
             "default": "absolute-path/to/src/file",
-            "description": "Absolute path to source file that contains font family variables"
+            "description": "Absolute path to source file that contains font family variables. \nYou can also specify a relative path to the open workspace folder by starting the path with ./"
           },
           "findcssvariableusage.fontFamilySettings.identifiers": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "default": "",
-            "description": "Set this to the name of the font family css variable to be able to use it"
+            "description": "If you keep all of your css variables in one file, you will need to set a partial of the string name here so that only correct variables are assigned to font families.\nFor example, if you have variables --font-family-1, you can add font-family as an item here and it will add all variables with font-family in for font family matching"
           },
           "findcssvariableusage.fontFamilySettings.cssProperties": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Array of css properties that will be looked at for matching font weight",
+            "description": "Set the css properties to analyse for font-family values here. You only need to set 1 form of it, for example, if you set font, you dont need to also set font-family",
             "default": [
-              "font-weight"
+              "font-family"
             ]
           }
         }
@@ -154,22 +148,21 @@
           "findcssvariableusage.lineHeightSettings.filePath": {
             "type": "string",
             "default": "absolute-path/to/src/file",
-            "description": "Absolute path to source file that contains line height variables"
+            "description": "Absolute path to source file that contains line height variables. \nYou can also specify a relative path to the open workspace folder by starting the path with ./"
           },
           "findcssvariableusage.lineHeightSettings.identifiers": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "default": "",
-            "description": "Set this to a partial of the name of a line height css variable to have line heights only use similar variables."
+            "description": "If you keep all of your css variables in one file, you will need to set a partial of the string name here so that only correct variables are assigned to line heights.\nFor example, if you have variables --line-height-1, you can add line-height as an item here and it will add all variables with line-height in for line height matching"
           },
           "findcssvariableusage.lineHeightSettings.cssProperties": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Array of css properties that will be looked at for matching line height",
+            "description": "Set the css properties to analyse for line-height values here.",
             "default": [
               "line-height"
             ]
@@ -182,7 +175,7 @@
           "findcssvariableusage.spacingSettings.filePath": {
             "type": "string",
             "default": "absolute-path/to/src/file",
-            "description": "Absolute path to source file that contains spacing variables"
+            "description": "Absolute path to source file that contains spacing variables. \nYou can also specify a relative path to the open workspace folder by starting the path with ./"
           },
           "findcssvariableusage.spacingSettings.cssProperties": {
             "type": "array",
@@ -194,15 +187,14 @@
               "padding",
               "gap"
             ],
-            "description": "Set what css properties are looked at for css variables. By default, margin, padding and gap are selected. You do not need to list all variations of margin or padding, just 'padding' will be enough."
+            "description": "Set the css properties to analyse for spacing values here. You only need to set 1 form of it, for example, if you set margin, you dont need to also set margin-left"
           },
           "findcssvariableusage.spacingSettings.identifiers": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "default": "",
-            "description": "Set this to a partial of the name of a spacing css variable to have spacing's only use similar variables."
+            "description": "If you keep all of your css variables in one file, you will need to set a partial of the string name here so that only correct variables are assigned to spacings.\nFor example, if you have variables --margin-1, you can add margin as an item here and it will add all variables with margin in for whatever you have in css properties items"
           }
         }
       },
@@ -212,7 +204,7 @@
           "findcssvariableusage.borderRadiiSettings.filePath": {
             "type": "string",
             "default": "absolute-path/to/src/file",
-            "description": "Absolute path to source file that contains border radii variables"
+            "description": "Absolute path to source file that contains spacing variables. \nYou can also specify a relative path to the open workspace folder by starting the path with ./"
           },
           "findcssvariableusage.borderRadiiSettings.cssProperties": {
             "type": "array",
@@ -222,15 +214,14 @@
             "default": [
               "border"
             ],
-            "description": "Set what css properties are looked at for css variables. By default, margin, padding and gap are selected. You do not need to list all variations of margin or padding, just 'padding' will be enough."
+            "description": "Set the css properties to analyse for border values here. You only need to set 1 form of it, for example, if you set border, you dont need to also set border-radius"
           },
           "findcssvariableusage.borderRadiiSettings.identifiers": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "default": "",
-            "description": "Set this to a partial of the name of a spacing css variable to have spacing's only use similar variables."
+            "description": "If you keep all of your css variables in one file, you will need to set a partial of the string name here so that only correct variables are assigned to borders.\nFor example, if you have variables --border-1, you can add border as an item here and it will add all variables with border in for whatever you have in css properties items"
           }
         }
       },
