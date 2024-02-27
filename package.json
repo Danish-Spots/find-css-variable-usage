@@ -58,14 +58,8 @@
             "description": "Set the css properties to analyse for color values here",
             "default": [
               "background",
-              "background-color",
               "color",
-              "border",
-              "border-color",
-              "border-bottom-color",
-              "border-left-color",
-              "border-right-color",
-              "border-top-color"
+              "border"
             ]
           }
         }
@@ -185,12 +179,12 @@
       {
         "title": "Spacing variable settings",
         "properties": {
-          "findcssvariableusage.spacingSettings.FilePath": {
+          "findcssvariableusage.spacingSettings.filePath": {
             "type": "string",
             "default": "absolute-path/to/src/file",
             "description": "Absolute path to source file that contains spacing variables"
           },
-          "findcssvariableusage.spacingSettings.applyToProperties": {
+          "findcssvariableusage.spacingSettings.cssProperties": {
             "type": "array",
             "items": {
               "type": "string"
@@ -201,6 +195,42 @@
               "gap"
             ],
             "description": "Set what css properties are looked at for css variables. By default, margin, padding and gap are selected. You do not need to list all variations of margin or padding, just 'padding' will be enough."
+          },
+          "findcssvariableusage.spacingSettings.identifiers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": "",
+            "description": "Set this to a partial of the name of a spacing css variable to have spacing's only use similar variables."
+          }
+        }
+      },
+      {
+        "title": "Border radii variable settings",
+        "properties": {
+          "findcssvariableusage.borderRadiiSettings.filePath": {
+            "type": "string",
+            "default": "absolute-path/to/src/file",
+            "description": "Absolute path to source file that contains border radii variables"
+          },
+          "findcssvariableusage.borderRadiiSettings.cssProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [
+              "border"
+            ],
+            "description": "Set what css properties are looked at for css variables. By default, margin, padding and gap are selected. You do not need to list all variations of margin or padding, just 'padding' will be enough."
+          },
+          "findcssvariableusage.borderRadiiSettings.identifiers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": "",
+            "description": "Set this to a partial of the name of a spacing css variable to have spacing's only use similar variables."
           }
         }
       },

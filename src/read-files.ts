@@ -39,20 +39,32 @@ export function readSourceFile(
     if (!pathToFile || pathToFile === "absolute-path/to/src/file")
       return cssVariables;
 
-    const fileContent = fs.readFileSync(pathToFile, "utf-8");
+    let fileContent;
+    if (pathToFile.startsWith("./")) {
+      if (vscode.workspace.workspaceFolders) {
+        let f = vscode.workspace.workspaceFolders[0].uri.fsPath;
+        // relative file path reading
+        fileContent = fs.readFileSync(f + pathToFile.slice(1), "utf-8");
+      }
+    } else {
+      // absolute file path
+      fileContent = fs.readFileSync(pathToFile, "utf-8");
+    }
+    if (!fileContent) return cssVariables;
+
     const matches = fileContent.matchAll(/(--[\w-]+):([^;]+);/g);
-    if (matches)
-      for (let [_match, name, value] of matches) {
-        value = value.replace("#", "").trim();
-        cssVariables[value] = createValue(name.trim(), value);
-        if (identifiers) {
-          if (identifiers.some((identifier) => name.includes(identifier))) {
-            cssVariables[value] = createValue(name.trim(), value);
-          }
-        } else {
+    if (!matches) return cssVariables;
+    for (let [_match, name, value] of matches) {
+      // # is a private identifier in json objects
+      value = value.replace("#", "").trim();
+      if (identifiers) {
+        if (identifiers.some((identifier) => name.includes(identifier))) {
           cssVariables[value] = createValue(name.trim(), value);
         }
+      } else {
+        cssVariables[value] = createValue(name.trim(), value);
       }
+    }
     return cssVariables;
   } catch (error) {
     vscode.window.showErrorMessage(
@@ -65,46 +77,4 @@ export function readSourceFile(
 function createValue(name: string, value: string) {
   return { value, name, replacement: `var(${name})` };
   // cssVariables[value] = { value, name, replacement: `var(${name})` };
-}
-
-export function readSourceFiles(
-  settingsName: string,
-  regexMatcher: RegExp,
-  properties: { name: string; conditionFn: (() => boolean) | undefined }[]
-): Record<string, { name: string; value: string }[]> | undefined {
-  const sourceFile =
-    vscode.workspace.getConfiguration().get<string>(settingsName) || undefined;
-
-  const cssVariables: Record<string, { name: string; value: string }[]> = {};
-
-  try {
-    if (sourceFile === undefined) return undefined;
-    const sourceFileContent = fs.readFileSync(sourceFile, "utf-8");
-
-    const matches = sourceFileContent.matchAll(regexMatcher);
-    for (const match of matches) {
-      const [, name, value] = match;
-      // Check if the variable is associated with any checked property for this file
-      properties.forEach((cssProperty) => {
-        if (!cssVariables[cssProperty.name]) {
-          cssVariables[cssProperty.name] = [];
-        }
-
-        if (
-          !cssProperty.conditionFn ||
-          (cssProperty.conditionFn && cssProperty.conditionFn())
-        ) {
-          cssVariables[cssProperty.name].push({
-            name: name.trim(),
-            value: value.trim(),
-          });
-        }
-      });
-    }
-    console.table(cssVariables);
-    return cssVariables;
-  } catch (error) {
-    console.error("Error reading source file:", error);
-    return undefined;
-  }
 }

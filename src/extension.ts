@@ -6,13 +6,8 @@
  */
 import fs from "fs";
 import * as vscode from "vscode";
-import {
-  AllCssVariableMappings,
-  readSourceFile,
-  readSourceFiles,
-} from "./read-files";
+import { AllCssVariableMappings, readSourceFile } from "./read-files";
 import { loadAllSettings } from "./load-all-settings";
-import { highlightSimilarVariablesV2 } from "./highlight";
 import { CssVariableSuggestionCodeLensProvider } from "./code-lens.provider";
 
 interface CssVariable {
@@ -26,13 +21,9 @@ const settingsValues = loadAllSettings();
 export var allVariables: AllCssVariableMappings = {};
 
 export function activate(context: vscode.ExtensionContext) {
-  const colorVars = readSourceFile(
-    settingsValues.colorSettings.filePath,
-    settingsValues.colorSettings.identifiers
-  );
-  settingsValues.colorSettings.cssProperties?.forEach((prop) => {
-    allVariables[prop] = colorVars;
-  });
+  createVariables();
+  console.log(allVariables);
+
   let codeLensProviderDisposableCss = vscode.languages.registerCodeLensProvider(
     {
       language: "css",
@@ -63,7 +54,6 @@ export function activate(context: vscode.ExtensionContext) {
       const editBuilder = new vscode.WorkspaceEdit();
       editBuilder.replace(args.document.uri, args.range, replacementLine);
       vscode.workspace.applyEdit(editBuilder);
-      // replace logic
     }
   );
 }
@@ -74,4 +64,59 @@ interface RepalceArgs {
   value: string;
   replacement: string;
   document: vscode.TextDocument;
+}
+
+function createVariables() {
+  // read all files
+  const colorVars = readSourceFile(
+    settingsValues.colorSettings.filePath,
+    settingsValues.colorSettings.identifiers
+  );
+  const borderRadiiVars = readSourceFile(
+    settingsValues.borderRadiiSettings.filePath,
+    settingsValues.borderRadiiSettings.identifiers
+  );
+  const fontSizeVars = readSourceFile(
+    settingsValues.fontSizeSettings.filePath,
+    settingsValues.fontSizeSettings.identifiers
+  );
+  const fontWeightVars = readSourceFile(
+    settingsValues.fontWeightSettings.filePath,
+    settingsValues.fontWeightSettings.identifiers
+  );
+  const fontFamilyVars = readSourceFile(
+    settingsValues.fontFamilySettings.filePath,
+    settingsValues.fontFamilySettings.identifiers
+  );
+  const lineHeightVars = readSourceFile(
+    settingsValues.lineHeightSettings.filePath,
+    settingsValues.lineHeightSettings.identifiers
+  );
+  const spacingVars = readSourceFile(
+    settingsValues.spacingSettings.filePath,
+    settingsValues.spacingSettings.identifiers
+  );
+
+  // set variables
+  settingsValues.colorSettings.cssProperties?.forEach((prop) => {
+    allVariables[prop] = colorVars;
+  });
+  settingsValues.borderRadiiSettings.cssProperties?.forEach((prop) => {
+    allVariables[prop] = { ...allVariables[prop], ...borderRadiiVars };
+  });
+  settingsValues.fontSizeSettings.cssProperties?.forEach((prop) => {
+    allVariables[prop] = { ...allVariables[prop], ...fontSizeVars };
+  });
+  settingsValues.fontFamilySettings.cssProperties?.forEach((prop) => {
+    allVariables[prop] = { ...allVariables[prop], ...fontFamilyVars };
+  });
+  settingsValues.fontWeightSettings.cssProperties?.forEach((prop) => {
+    allVariables[prop] = { ...allVariables[prop], ...fontWeightVars };
+  });
+  settingsValues.lineHeightSettings.cssProperties?.forEach((prop) => {
+    allVariables[prop] = { ...allVariables[prop], ...lineHeightVars };
+  });
+  settingsValues.spacingSettings.cssProperties?.forEach((prop) => {
+    allVariables[prop] = { ...allVariables[prop], ...spacingVars };
+  });
 }

@@ -23,8 +23,16 @@ export function highlightSimilarVariablesV2(
   let match;
   while ((match = propertyRegex.exec(entireDocumentText)) !== null) {
     const fullMatch = match[0];
-    const property = match[1].trim(); // Property name
+    let property = match[1].trim(); // Property name
     const values = match[2].trim().split(" "); // Property value
+
+    // override property
+    for (let key in cssVariables) {
+      if (property.includes(key)) {
+        property = key;
+        break;
+      }
+    }
     const variableMappings = cssVariables[property];
     if (variableMappings) {
       for (const value of values) {
