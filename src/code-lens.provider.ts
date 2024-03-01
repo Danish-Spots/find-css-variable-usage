@@ -3,35 +3,31 @@ import {
   CodeLens,
   CodeLensProvider,
   Event,
+  ExtensionContext,
   ProviderResult,
   TextDocument,
-  window,
 } from "vscode";
 import { highlightSimilarVariablesV2 } from "./highlight";
-import { allVariables } from "./extension";
+import { AllCssVariableMappings } from "./read-files";
 
 export class CssVariableSuggestionCodeLensProvider implements CodeLensProvider {
   onDidChangeCodeLenses?: Event<void> | undefined;
+  constructor(private context: ExtensionContext) {}
+
   provideCodeLenses(
     document: TextDocument,
     token: CancellationToken
   ): ProviderResult<CodeLens[]> {
-    const codeLenses: CodeLens[] = [];
-
     // Call your analysis function to get potential suggestions
-    const suggestions = highlightSimilarVariablesV2(document, allVariables, [
-      "color",
-    ]);
-    suggestions?.forEach(({ range, command }) => {
-      codeLenses.push(new CodeLens(range, command));
-    });
+    const allVars: AllCssVariableMappings | undefined =
+      this.context.globalState.get("allVariables");
 
-    return codeLenses;
+    return highlightSimilarVariablesV2(document, allVars);
   }
   resolveCodeLens?(
     codeLens: CodeLens,
     token: CancellationToken
   ): ProviderResult<CodeLens> {
-    throw new Error("Method not implemented.");
+    return codeLens;
   }
 }

@@ -4,13 +4,10 @@ import { AllCssVariableMappings, CssVariableMapping } from "./read-files";
 
 export function highlightSimilarVariablesV2(
   document: vscode.TextDocument,
-  cssVariables: AllCssVariableMappings | undefined,
-  cssProperties: String[]
+  cssVariables: AllCssVariableMappings | undefined
 ): vscode.CodeLens[] | undefined {
-  if (!cssVariables || !cssProperties) return undefined;
+  if (!cssVariables) return undefined;
 
-  const decorations: vscode.DecorationOptions[] = [];
-  // Iterate over each line in the document
   // Regular expression to match CSS properties and values in the entire document
   const propertyRegex = /([a-zA-Z-]+)\s*:\s*([^;]+)/g;
 
