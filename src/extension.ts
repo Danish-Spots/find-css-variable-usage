@@ -29,7 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Setup replace command
   const replaceValueDisposable = vscode.commands.registerCommand(
-    "findcssvariableusage.replaceValue",
+    "replacecsswithvars.replaceValue",
     ReplaceValue
   );
   context.subscriptions.push(replaceValueDisposable);

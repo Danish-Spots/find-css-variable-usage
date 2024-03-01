@@ -58,7 +58,7 @@ export function highlightSimilarVariablesV2(
           codeLens.command = {
             title: "Replace with css variable",
             tooltip: "Replaces the current css value with a css variable",
-            command: "findcssvariableusage.replaceValue",
+            command: "replacecsswithvars.replaceValue",
             arguments: [
               {
                 range,

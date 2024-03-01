@@ -8,7 +8,7 @@ let allVariables: AllCssVariableMappings = {};
 
 export const ConfigChange =
   (context: ExtensionContext) => (event: ConfigurationChangeEvent) => {
-    if (event.affectsConfiguration("findcssvariableusage")) {
+    if (event.affectsConfiguration("replacecsswithvars")) {
       // Read files when the relevant configuration is changed
       reloadSettings(context);
     }

@@ -27,12 +27,12 @@ export type ConfigSettings =
 
 function loadCategorySettings(settingsName: ConfigSettings) {
   return {
-    filePath: getSettingsValue(`findcssvariableusage.${settingsName}.filePath`),
+    filePath: getSettingsValue(`replacecsswithvars.${settingsName}.filePath`),
     cssProperties: getSettingsValue<string[]>(
-      `findcssvariableusage.${settingsName}.cssProperties`
+      `replacecsswithvars.${settingsName}.cssProperties`
     ),
     identifiers: getSettingsValue<string[]>(
-      `findcssvariableusage.${settingsName}.identifiers`
+      `replacecsswithvars.${settingsName}.identifiers`
     ),
   };
 }
