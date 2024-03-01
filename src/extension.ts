@@ -4,7 +4,6 @@
 /**
  * This extension was made using alot of chatGpt 3.5 prompts
  */
-import fs from "fs";
 import * as vscode from "vscode";
 import { CssVariableSuggestionCodeLensProvider } from "./code-lens.provider";
 import { cssSupport, scssSupport } from "./file-support";

@@ -1,34 +1,17 @@
 /* eslint-disable curly */
 import * as vscode from "vscode";
 import fs from "fs";
+import { CssVariable, CssVariableMapping } from "./css-types";
 
-export interface CssVariable {
-  /**
-   * Value of css variable, eg #fff
-   */
-  value: string;
-  /**
-   * Name of css variable, eg --name-of-var
-   */
-  name: string;
-  /**
-   * Replacement suggestion, eg var(--name-of-var)
-   */
-  replacement: string;
-}
-export type CssVariableMapping = Record<string, CssVariable>;
 /**
- * Interface representing all css variables mapped out of all files
- * To avoid conflicts between spacing and font sizes, they are mapped by keys
- * @interface
+ * Function that takes a path to a file and css variable identifiers array and
+ * builds an object of css value name mappings
+ * @param pathToFile path to the file where the css variable are (absolute or relative both work)
+ * @param identifiers the identifiers to be used when reading the path values.
+ * @returns An object with css values as keys and then object containing value,
+ *  css variable name and replacement
+ * @description this function was built with help from chatgpt 3.5
  */
-export interface AllCssVariableMappings {
-  /**
-   * record of css properties with record of mappings
-   * @type
-   */
-  [key: string]: CssVariableMapping | undefined;
-}
 export function readSourceFile(
   pathToFile: string | undefined,
   identifiers: string[] | undefined

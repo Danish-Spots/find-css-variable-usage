@@ -8,7 +8,7 @@ import {
   TextDocument,
 } from "vscode";
 import { highlightSimilarVariablesV2 } from "./highlight";
-import { AllCssVariableMappings } from "./read-files";
+import { AllCssVariableMappings } from "./css-types";
 
 export class CssVariableSuggestionCodeLensProvider implements CodeLensProvider {
   onDidChangeCodeLenses?: Event<void> | undefined;
@@ -21,7 +21,6 @@ export class CssVariableSuggestionCodeLensProvider implements CodeLensProvider {
     // Call your analysis function to get potential suggestions
     const allVars: AllCssVariableMappings | undefined =
       this.context.globalState.get("allVariables");
-
     return highlightSimilarVariablesV2(document, allVars);
   }
   resolveCodeLens?(

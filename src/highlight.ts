@@ -1,7 +1,15 @@
 /* eslint-disable curly */
 import * as vscode from "vscode";
-import { AllCssVariableMappings, CssVariableMapping } from "./read-files";
+import { AllCssVariableMappings } from "./css-types";
 
+/**
+ * This function takes the current active document and cssVariable mappings and
+ * creates codeLenses for places where css variables could be used
+ * @param document active document from the editor
+ * @param cssVariables css variable mapping to look at
+ * @returns code lenses array or undefined
+ * @description This function was made with the help of chatgpt 3.5
+ */
 export function highlightSimilarVariablesV2(
   document: vscode.TextDocument,
   cssVariables: AllCssVariableMappings | undefined
@@ -67,20 +75,6 @@ export function highlightSimilarVariablesV2(
         }
       }
     }
-
-    // Process the property-value pair as needed
   }
   return codeLenses;
 }
-
-// decorations.push({
-//   range,
-//   renderOptions: {
-//     after: {
-//       contentText: `    Replace with: ${matchingValue.name}`,
-//       color: textColor,
-//     },
-//   },
-// });
-
-// valueRegex.lastIndex = match.index + 1;

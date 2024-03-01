@@ -1,10 +1,7 @@
 import { ConfigurationChangeEvent, ExtensionContext } from "vscode";
-import {
-  AllCssVariableMappings,
-  CssVariableMapping,
-  readSourceFile,
-} from "./read-files";
+import { readSourceFile } from "./read-files";
 import { ConfigSettings, loadAllSettings } from "./load-all-settings";
+import { AllCssVariableMappings, CssVariableMapping } from "./css-types";
 
 let settingsValues = loadAllSettings();
 let allVariables: AllCssVariableMappings = {};
